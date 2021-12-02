@@ -9,7 +9,7 @@ const createGenre = async ({ name }) => {
   return transactionQuery.rows[0];
 };
 
-const findGenreByName = async ({ name }) => {
+const getGenreByName = async ({ name }) => {
   const genreQuery = await connection.query(
     'SELECT * FROM genres WHERE name = $1',
     [name],
@@ -18,7 +18,16 @@ const findGenreByName = async ({ name }) => {
   return genreQuery.rows[0];
 };
 
+const getAllGenres = async () => {
+  const genresQuery = await connection.query(
+    'SELECT * FROM genres;',
+  );
+
+  return genresQuery.rows;
+};
+
 export {
   createGenre,
-  findGenreByName,
+  getGenreByName,
+  getAllGenres,
 };

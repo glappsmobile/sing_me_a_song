@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
-const serverError = async (err, req, res, next) => res.sendStatus(500);
+import { statusCode } from '../enums/httpStatus.js';
+
+const serverError = async (err, req, res, next) => res.sendStatus(statusCode.INTERNAL_SERVER_ERROR);
 
 export default serverError;

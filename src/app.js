@@ -12,7 +12,9 @@ app.get('/status', async (req, res) => {
   res.send("I'm alive");
 });
 
-app.post('/genre', genreController.createGenre);
+app.post('/genres', genreController.createGenre);
+
+app.get('/genres', genreController.getAllGenres);
 
 app.use(serverError);
 

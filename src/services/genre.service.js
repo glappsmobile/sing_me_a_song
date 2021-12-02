@@ -1,21 +1,24 @@
 import * as genreRepository from '../repositories/genre.repository.js';
-import ConflictError from '../errors/ConflictError.js';
-import BadRequestError from '../errors/BadRequestError.js';
+import GenreAlreadyExistsError from '../errors/GenreAlreadyExistsError.js';
+import GenreNameTooBigError from '../errors/GenreNameTooBigError.js';
 
 const createGenre = async ({ name }) => {
   if (name.length > 255) {
-    throw new BadRequestError('Name is too big (over 255 chars).');
+    throw new GenreNameTooBigError('Name is too big (over 255 chars).');
   }
 
-  const genre = await genreRepository.findGenreByName({ name });
+  const genre = await genreRepository.getGenreByName({ name });
 
   if (genre) {
-    throw new ConflictError(`The genre "${name}" already exists.`);
+    throw new GenreAlreadyExistsError(`The genre "${name}" already exists.`);
   }
 
   return genreRepository.createGenre({ name });
 };
 
+const getAllGenres = async () => genreRepository.getAllGenres();
+
 export {
   createGenre,
+  getAllGenres,
 };
