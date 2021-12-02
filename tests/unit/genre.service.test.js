@@ -8,12 +8,13 @@ const sut = genreService;
 const mockGenreRepository = {
   getGenreByName: () => jest.spyOn(genreRepository, 'getGenreByName'),
   createGenre: () =>  jest.spyOn(genreRepository, 'createGenre'),
+  getAllGenres: () =>  jest.spyOn(genreRepository, 'getAllGenres'),
 }
 
 describe('Genre Service', () => {
   it('Should throw a GenreNameTooBigError when name is too big', async () => {
     const body = genreFactory.createTooBigGenreNameBody();
-    
+
     await expect(async () => {
       await sut.createGenre(body);
     }).rejects.toThrowError(GenreNameTooBigError);
@@ -28,13 +29,17 @@ describe('Genre Service', () => {
       }).rejects.toThrowError(GenreAlreadyExistsError);
   });
 
-  it("Should return an array with the genre name if the genre is valid and doesn't exist", async () => {
-    const body = genreFactory.createGenreBody();
-    
-    mockGenreRepository.getGenreByName().mockImplementationOnce(() => false);
-    mockGenreRepository.createGenre().mockImplementationOnce(() => body);
+  it("Should return an array with", async () => {
 
-    const result = await sut.createGenre(body);
-    expect(result).toEqual(body);
+    const mockedGenres = [
+      {id: 1, name: 'rock'}, 
+      {id: 2, name: 'samba'}
+    ];
+    
+    mockGenreRepository.getAllGenres().mockImplementationOnce(() => mockedGenres);
+
+    const result = await sut.getAllGenres();
+
+    expect(result).toEqual(mockedGenres);
   });
 });
