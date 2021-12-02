@@ -12,23 +12,20 @@ const mockGenreRepository = {
 
 describe('Genre Service', () => {
   it('Should throw a GenreNameTooBigError when name is too big', async () => {
-    try {
-      const body = genreFactory.createTooBigGenreNameBody();
-
+    const body = genreFactory.createTooBigGenreNameBody();
+    
+    await expect(async () => {
       await sut.createGenre(body);
-    } catch (error) {
-      expect(error instanceof GenreNameTooBigError).toEqual(true);
-    }
+    }).rejects.toThrowError(GenreNameTooBigError);
   });
 
   it('Should throw a GenreAlreadyExistsError when genre already exists', async () => {
-    try {
       mockGenreRepository.getGenreByName().mockImplementationOnce(() => ({ name: 'genre name' }));
       const body = genreFactory.createGenreBody();
-      await sut.createGenre(body);
-    } catch (error) {
-      expect(error instanceof GenreAlreadyExistsError).toEqual(true);
-    }
+
+      await expect(async () => {
+        await sut.createGenre(body);
+      }).rejects.toThrowError(GenreAlreadyExistsError);
   });
 
   it("Should return an array with the genre name if the genre is valid and doesn't exist", async () => {
