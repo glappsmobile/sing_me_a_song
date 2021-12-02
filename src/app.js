@@ -2,6 +2,7 @@ import './setup.js';
 import express from 'express';
 import cors from 'cors';
 import * as genreController from './controllers/genre.controller.js';
+import serverError from './middlewares/serverError.middleware.js';
 
 const app = express();
 app.use(express.json());
@@ -12,5 +13,7 @@ app.get('/status', async (req, res) => {
 });
 
 app.post('/genre', genreController.createGenre);
+
+app.use(serverError);
 
 export default app;
