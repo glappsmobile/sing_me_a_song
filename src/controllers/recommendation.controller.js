@@ -7,6 +7,7 @@ import { statusCode } from '../enums/httpStatus.js';
 const createRecommendation = async (req, res, next) => {
   try {
     if (recommendationSchema.createRecommendation.validate(req.body).error) {
+      console.log(recommendationSchema.createRecommendation.validate(req.body).error);
       return res.sendStatus(statusCode.BAD_REQUEST);
     }
 
