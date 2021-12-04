@@ -1,7 +1,7 @@
 import * as genreService from '../services/genre.service.js';
 import * as genreSchema from '../schemas/genre.schema.js';
-import GenreAlreadyExistsError from '../errors/GenreAlreadyExistsError.js';
-import GenreNameTooBigError from '../errors/GenreNameTooBigError.js';
+import GenreConflictError from '../errors/GenreConflictError.js';
+import GenreParamsError from '../errors/GenreParamsError.js';
 import { statusCode } from '../enums/httpStatus.js';
 
 const createGenre = async (req, res, next) => {
@@ -15,11 +15,11 @@ const createGenre = async (req, res, next) => {
 
     return res.status(statusCode.CREATED).send(genre);
   } catch (error) {
-    if (error instanceof GenreAlreadyExistsError) {
+    if (error instanceof GenreConflictError) {
       return res.status(statusCode.CONFLICT).send(error.message);
     }
 
-    if (error instanceof GenreNameTooBigError) {
+    if (error instanceof GenreParamsError) {
       return res.status(statusCode.BAD_REQUEST).send(error.message);
     }
 
