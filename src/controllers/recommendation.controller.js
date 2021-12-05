@@ -62,8 +62,25 @@ const getRandomRecommendation = async (req, res, next) => {
   }
 };
 
+const getTopRecommendations = async (req, res, next) => {
+  if (recommendationSchema.getTopRecommendations.validate(req.params).error) {
+    return res.sendStatus(statusCode.BAD_REQUEST);
+  }
+
+  try {
+    const { amount } = req.params;
+
+    const recommendations = await recommendationService.getTopRecommendations({ amount });
+
+    res.send(recommendations);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   createRecommendation,
   voteRecommendation,
   getRandomRecommendation,
+  getTopRecommendations,
 };

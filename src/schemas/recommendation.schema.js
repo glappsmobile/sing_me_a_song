@@ -11,7 +11,12 @@ const voteRecommendation = joi.object({
   action: joi.string().valid('upvote', 'downvote').required(),
 });
 
+const getTopRecommendations = joi.object({
+  amount: joi.number().required(),
+});
+
 export {
   createRecommendation,
   voteRecommendation,
+  getTopRecommendations,
 };

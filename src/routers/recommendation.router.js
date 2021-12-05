@@ -9,4 +9,6 @@ router.post('/:id/:action', recommendationController.voteRecommendation);
 
 router.get('/random', recommendationController.getRandomRecommendation);
 
+router.get('/top/:amount', recommendationController.getTopRecommendations);
+
 export default router;

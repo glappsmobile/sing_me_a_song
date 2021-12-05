@@ -89,8 +89,17 @@ const getRandomRecommendation = async () => {
   return randomRecommendation;
 };
 
+const getTopRecommendations = async ({ amount }) => {
+  if (amount <= 0) {
+    return [];
+  }
+
+  return recommendationRepository.getTopRecommendations({ amount });
+};
+
 export {
   createRecommendation,
   voteRecommendation,
   getRandomRecommendation,
+  getTopRecommendations,
 };

@@ -107,6 +107,29 @@ const getRecommendationsByScore = async ({ greaterOrEqual = null, lessOrEqual = 
   return recommendationQuery.rows;
 };
 
+const getTopRecommendations = async ({ amount }) => {
+  const queryString = `
+    SELECT 
+      songs.id, songs.name, songs.score, songs.youtube_link AS "youtubeLink",
+      json_agg(CAST(ROW(genres.id, genres.name) AS genres )) AS genres
+    FROM songs
+      JOIN songs_genres
+        ON songs_genres.song_id = songs.id
+          JOIN genres
+            ON songs_genres.genre_id = genres.id
+    GROUP BY songs.id
+    ORDER BY songs.score DESC
+    LIMIT $1
+  `;
+
+  const recommendationQuery = await connection.query(
+    queryString,
+    [amount],
+  );
+
+  return recommendationQuery.rows;
+};
+
 export {
   createRecommendation,
   getRecommendationByYoutubeLink,
@@ -115,4 +138,5 @@ export {
   downvoteRecommendation,
   deleteRecommendation,
   getRecommendationsByScore,
+  getTopRecommendations,
 };
