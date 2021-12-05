@@ -7,6 +7,6 @@ router.post('', recommendationController.createRecommendation);
 
 router.post('/:id/:action', recommendationController.voteRecommendation);
 
-// router.post('/:id/downvote', recommendationController.downvoteRecommendation);
+router.get('/random', recommendationController.getRandomRecommendation);
 
 export default router;

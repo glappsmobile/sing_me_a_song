@@ -63,7 +63,30 @@ const voteRecommendation = async ({ id, isUpvote }) => {
   return recommendationRepository.downvoteRecommendation({ id });
 };
 
+const getRandomRecommendation = async () => {
+  const randomNumber = Math.floor(Math.random() * 101);
+
+  let recommendations;
+  if (randomNumber <= 70) {
+    recommendations = await recommendationRepository
+      .getRecommendationsByScore({ greaterOrEqual: 11 });
+  } else {
+    recommendations = await recommendationRepository
+      .getRecommendationsByScore({ greaterOrEqual: -5, lessOrEqual: 10 });
+  }
+
+  if (recommendations.length === 0) {
+    recommendations = await recommendationRepository
+      .getRecommendationsByScore();
+  }
+
+  const randomRecommendation = recommendations[Math.floor(Math.random() * recommendations.length)];
+
+  return randomRecommendation;
+};
+
 export {
   createRecommendation,
   voteRecommendation,
+  getRandomRecommendation,
 };

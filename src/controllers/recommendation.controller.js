@@ -49,7 +49,17 @@ const voteRecommendation = async (req, res, next) => {
   }
 };
 
+const getRandomRecommendation = async (req, res, next) => {
+  try {
+    const recommendation = await recommendationService.getRandomRecommendation();
+    res.send(recommendation);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   createRecommendation,
   voteRecommendation,
+  getRandomRecommendation,
 };
