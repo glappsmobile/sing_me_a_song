@@ -43,7 +43,7 @@ const createRecommendation = async ({ name, youtubeLink, genres }) => {
     .createRecommendation({ name, youtubeLink, genresIds: uniqueGenresIds });
 };
 
-const upvoteRecommendation = async ({ id }) => {
+const voteRecommendation = async ({ id, isUpvote }) => {
   const existingRecommendationWithGivenId = await recommendationRepository
     .getRecommendationById({ id });
 
@@ -51,10 +51,14 @@ const upvoteRecommendation = async ({ id }) => {
     throw new RecommendationNotFoundError('There is no such recommendation with given id.');
   }
 
-  return recommendationRepository.upvoteRecommendation({ id });
+  if (isUpvote) {
+    return recommendationRepository.upvoteRecommendation({ id });
+  }
+
+  return recommendationRepository.downvoteRecommendation({ id });
 };
 
 export {
   createRecommendation,
-  upvoteRecommendation,
+  voteRecommendation,
 };

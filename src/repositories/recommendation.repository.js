@@ -51,9 +51,19 @@ const upvoteRecommendation = async ({ id }) => {
   return recommendationQuery.rows[0];
 };
 
+const downvoteRecommendation = async ({ id }) => {
+  const recommendationQuery = await connection.query(
+    'UPDATE songs SET score = score - 1 WHERE id = $1 RETURNING score;',
+    [id],
+  );
+
+  return recommendationQuery.rows[0];
+};
+
 export {
   createRecommendation,
   getRecommendationByYoutubeLink,
   upvoteRecommendation,
   getRecommendationById,
+  downvoteRecommendation,
 };
