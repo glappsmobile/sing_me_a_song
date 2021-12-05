@@ -1,5 +1,4 @@
 node_modules
 coverage
 .env
-.test.env
-.dev.env
+.env.development
