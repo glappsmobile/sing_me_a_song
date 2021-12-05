@@ -34,9 +34,16 @@ const getGenresByIds = async ({ genresIds }) => {
   return genresQuery.rows;
 };
 
+const getGenreById = async ({ id }) => {
+  const genresQuery = await connection.query('SELECT * FROM genres LIMIT 1;', [id]);
+
+  return genresQuery.rows[0];
+};
+
 export {
   createGenre,
   getGenreByName,
   getAllGenres,
   getGenresByIds,
+  getGenreById,
 };

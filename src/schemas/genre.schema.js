@@ -4,4 +4,11 @@ const createGenre = joi.object({
   name: joi.string().required(),
 });
 
-export { createGenre };
+const getGenreById = joi.object({
+  id: joi.number().required(),
+});
+
+export {
+  createGenre,
+  getGenreById,
+};

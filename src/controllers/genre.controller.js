@@ -37,7 +37,23 @@ const getAllGenres = async (req, res, next) => {
   }
 };
 
+const getGenreById = async (req, res, next) => {
+  try {
+    if (genreSchema.createGenre.validate(req.params).error) {
+      return res.sendStatus(statusCode.BAD_REQUEST);
+    }
+
+    const { id } = req.params;
+    const genre = await genreService.getGenreById({ id });
+
+    return res.send(genre);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   createGenre,
   getAllGenres,
+  getGenreById,
 };

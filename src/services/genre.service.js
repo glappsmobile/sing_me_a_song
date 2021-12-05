@@ -18,7 +18,10 @@ const createGenre = async ({ name }) => {
 
 const getAllGenres = async () => genreRepository.getAllGenres();
 
+const getGenreById = async ({ id }) => genreRepository.getGenreById({ id });
+
 export {
   createGenre,
   getAllGenres,
+  getGenreById,
 };

@@ -7,4 +7,6 @@ router.get('', genreController.getAllGenres);
 
 router.post('', genreController.createGenre);
 
+router.post('/:id', genreController.getGenreById);
+
 export default router;
