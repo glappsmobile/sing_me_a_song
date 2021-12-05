@@ -1,12 +1,12 @@
 import connection from '../database/connection.js';
 
 const createGenre = async ({ name }) => {
-  const transactionQuery = await connection.query(
+  const genreQuery = await connection.query(
     'INSERT INTO "genres" ("name") VALUES ($1) RETURNING name;',
     [name],
   );
 
-  return transactionQuery.rows[0];
+  return genreQuery.rows[0];
 };
 
 const getGenreByName = async ({ name }) => {
@@ -26,8 +26,17 @@ const getAllGenres = async () => {
   return genresQuery.rows;
 };
 
+const getGenresByIds = async ({ genresIds }) => {
+  const genresQuery = await connection.query(
+    `SELECT * FROM genres WHERE id in (${genresIds.join(',')});`,
+  );
+
+  return genresQuery.rows;
+};
+
 export {
   createGenre,
   getGenreByName,
   getAllGenres,
+  getGenresByIds,
 };
