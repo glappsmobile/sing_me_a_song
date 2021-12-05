@@ -60,10 +60,16 @@ const downvoteRecommendation = async ({ id }) => {
   return recommendationQuery.rows[0];
 };
 
+const deleteRecommendation = async ({ id }) => {
+  await connection.query('DELETE FROM songs_genres WHERE song_id = $1', [id]);
+  await connection.query('DELETE FROM songs WHERE id = $1', [id]);
+};
+
 export {
   createRecommendation,
   getRecommendationByYoutubeLink,
   upvoteRecommendation,
   getRecommendationById,
   downvoteRecommendation,
+  deleteRecommendation,
 };

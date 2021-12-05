@@ -55,6 +55,11 @@ const voteRecommendation = async ({ id, isUpvote }) => {
     return recommendationRepository.upvoteRecommendation({ id });
   }
 
+  if (existingRecommendationWithGivenId.score <= -5) {
+    await recommendationRepository.deleteRecommendation({ id });
+    return ({ message: 'deleted' });
+  }
+
   return recommendationRepository.downvoteRecommendation({ id });
 };
 
