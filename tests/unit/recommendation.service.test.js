@@ -15,6 +15,7 @@ const mockRecommendationRepository = {
   getRecommendationById: () => jest.spyOn(recommendationRepository, 'getRecommendationById'),
   upvoteRecommendation: () => jest.spyOn(recommendationRepository, 'upvoteRecommendation'),
   downvoteRecommendation: () => jest.spyOn(recommendationRepository, 'downvoteRecommendation'),
+  deleteRecommendation: () => jest.spyOn(recommendationRepository, 'deleteRecommendation'),
 }
 
 const mockGenreRepository = {
@@ -165,16 +166,16 @@ describe('Recommendation Service: voteRecommendation', () => {
     await expect(promise).rejects.toThrowError(RecommendationNotFoundError);
   });
 
-  it('Should return an array with the score when the id is valid and upvoting', async () => {
-    mockRecommendationRepository.getRecommendationById().mockImplementationOnce(() =>  true);
-    mockRecommendationRepository.upvoteRecommendation().mockImplementationOnce(() =>  ({ score: 1 }));
+  it('Should return an object with the score when the id is valid and upvoting', async () => {
+    mockRecommendationRepository.getRecommendationById().mockImplementationOnce(() =>  ({ score: 1 }));
+    mockRecommendationRepository.upvoteRecommendation().mockImplementationOnce(() =>  ({ score: 2 }));
 
     const result = await sut.voteRecommendation({ id: 1, isUpvote: true});
 
-    expect(result).toEqual({ score: 1 });
+    expect(result).toEqual({ score: 2 });
   });
 
-  it('Should throw a RecommendationNotFoundError when a non-existent id is given and downvoting', async () => {
+  it('Should throw a RecommendationNotFoundError when a non-existent id is given and downvoting with score above -5', async () => {
     mockRecommendationRepository.getRecommendationById().mockImplementationOnce(() =>  false);
 
     const promise = sut.voteRecommendation({ id: 1, isUpvote: false});
@@ -182,13 +183,22 @@ describe('Recommendation Service: voteRecommendation', () => {
     await expect(promise).rejects.toThrowError(RecommendationNotFoundError);
   });
 
-  it('Should return an array with the score when the id is valid and downvoting', async () => {
-    mockRecommendationRepository.getRecommendationById().mockImplementationOnce(() =>  true);
-    mockRecommendationRepository.downvoteRecommendation().mockImplementationOnce(() =>  ({ score: 1 }));
+  it('Should return an object with the score when the id is valid and downvoting with score above -5', async () => {
+    mockRecommendationRepository.getRecommendationById().mockImplementationOnce(() =>  ({ score: 1 }));
+    mockRecommendationRepository.downvoteRecommendation().mockImplementationOnce(() =>  ({ score: 0 }));
 
     const result = await sut.voteRecommendation({ id: 1, isUpvote: false});
 
-    expect(result).toEqual({ score: 1 });
+    expect(result).toEqual({ score: 0 });
+  });
+
+  it('Should return an object with the deletion message when the id is valid and downvoting with score -5', async () => {
+    mockRecommendationRepository.getRecommendationById().mockImplementationOnce(() =>  ({ score: -5 }));
+    mockRecommendationRepository.deleteRecommendation().mockImplementationOnce(() => true);
+
+    const result = await sut.voteRecommendation({ id: 1, isUpvote: false});
+
+    expect(result).toEqual({ message: 'deleted' });
   });
 });
 
