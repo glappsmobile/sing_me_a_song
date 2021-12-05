@@ -283,5 +283,14 @@ describe('Recommendation Service: getRandomRecommendation', () => {
 
     expect(result.score).toBeGreaterThanOrEqual(-5);
   });
+
+  it('Should throw a RecommendationNotFoundError when there are no recommendations registered', async () => {
+    mockRecommendationRepository.getRecommendationsByScore().mockImplementationOnce(() => []);
+    mockRecommendationRepository.getRecommendationsByScore().mockImplementationOnce(() => []);
+
+    const promise = sut.getRandomRecommendation();
+
+    await expect(promise).rejects.toThrowError(RecommendationNotFoundError);
+  });
 });
 
