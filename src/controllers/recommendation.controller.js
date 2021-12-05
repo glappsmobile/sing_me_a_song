@@ -54,6 +54,10 @@ const getRandomRecommendation = async (req, res, next) => {
     const recommendation = await recommendationService.getRandomRecommendation();
     res.send(recommendation);
   } catch (error) {
+    if (error instanceof RecommendationNotFoundError) {
+      return res.status(statusCode.NOT_FOUND).send(error.message);
+    }
+
     next(error);
   }
 };

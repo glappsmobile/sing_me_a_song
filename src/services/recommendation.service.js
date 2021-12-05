@@ -80,6 +80,10 @@ const getRandomRecommendation = async () => {
       .getRecommendationsByScore({ greaterOrEqual: -5 });
   }
 
+  if (recommendations.length === 0) {
+    throw new RecommendationNotFoundError('There are no recommendations registered.');
+  }
+
   const randomRecommendation = recommendations[Math.floor(Math.random() * recommendations.length)];
 
   return randomRecommendation;
