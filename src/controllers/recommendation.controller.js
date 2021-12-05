@@ -29,37 +29,17 @@ const createRecommendation = async (req, res, next) => {
   }
 };
 
-const upvoteRecommendation = async (req, res, next) => {
+const voteRecommendation = async (req, res, next) => {
   try {
     if (recommendationSchema.voteRecommendation.validate(req.params).error) {
       return res.sendStatus(statusCode.BAD_REQUEST);
     }
 
-    const { id } = req.params;
+    const { id, action } = req.params;
+    const isUpvote = action === 'upvote';
+    const recommendationNewScore = await recommendationService.voteRecommendation({ id, isUpvote });
 
-    const recommendation = await recommendationService.voteRecommendation({ id, isUpvote: true });
-
-    res.status(statusCode.OK).send(recommendation);
-  } catch (error) {
-    if (error instanceof RecommendationNotFoundError) {
-      return res.status(statusCode.NOT_FOUND).send(error.message);
-    }
-
-    next(error);
-  }
-};
-
-const downvoteRecommendation = async (req, res, next) => {
-  try {
-    if (recommendationSchema.voteRecommendation.validate(req.params).error) {
-      return res.sendStatus(statusCode.BAD_REQUEST);
-    }
-
-    const { id } = req.params;
-
-    const recommendation = await recommendationService.voteRecommendation({ id, isUpvote: false });
-
-    res.status(statusCode.OK).send(recommendation);
+    res.status(statusCode.OK).send(recommendationNewScore);
   } catch (error) {
     if (error instanceof RecommendationNotFoundError) {
       return res.status(statusCode.NOT_FOUND).send(error.message);
@@ -71,6 +51,5 @@ const downvoteRecommendation = async (req, res, next) => {
 
 export {
   createRecommendation,
-  upvoteRecommendation,
-  downvoteRecommendation,
+  voteRecommendation,
 };

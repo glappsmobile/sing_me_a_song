@@ -5,8 +5,8 @@ const router = new Router();
 
 router.post('', recommendationController.createRecommendation);
 
-router.post('/:id/upvote', recommendationController.upvoteRecommendation);
+router.post('/:id/:action', recommendationController.voteRecommendation);
 
-router.post('/:id/downvote', recommendationController.downvoteRecommendation);
+// router.post('/:id/downvote', recommendationController.downvoteRecommendation);
 
 export default router;

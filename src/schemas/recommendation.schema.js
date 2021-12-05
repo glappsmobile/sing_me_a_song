@@ -8,6 +8,7 @@ const createRecommendation = joi.object({
 
 const voteRecommendation = joi.object({
   id: joi.number().required(),
+  action: joi.string().valid('upvote', 'downvote').required(),
 });
 
 export {
