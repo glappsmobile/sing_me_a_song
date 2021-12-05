@@ -22,6 +22,7 @@ describe('Genre Service', () => {
 
   it('Should throw a GenreConflictError when genre already exists', async () => {
       mockGenreRepository.getGenreByName().mockImplementationOnce(() => ({ name: 'genre name' }));
+      
       const body = genreFactory.createGenreBody();
       const promise = sut.createGenre(body);
 

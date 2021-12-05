@@ -26,9 +26,9 @@ const getAllGenres = async () => {
   return genresQuery.rows;
 };
 
-const getGenresByIds = async ({ ids }) => {
+const getGenresByIds = async ({ genresIds }) => {
   const genresQuery = await connection.query(
-    `SELECT * FROM genres WHERE id in (${ids.join(',')});`,
+    `SELECT * FROM genres WHERE id in (${genresIds.join(',')});`,
   );
 
   return genresQuery.rows;

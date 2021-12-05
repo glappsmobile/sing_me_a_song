@@ -7,16 +7,14 @@ import { statusCode } from '../enums/httpStatus.js';
 const createRecommendation = async (req, res, next) => {
   try {
     if (recommendationSchema.createRecommendation.validate(req.body).error) {
-      console.log(recommendationSchema.createRecommendation.validate(req.body).error);
       return res.sendStatus(statusCode.BAD_REQUEST);
     }
 
     const { name, youtubeLink, genres } = req.body;
 
-    const recommendation = await recommendationService
-      .createRecommendation({ name, youtubeLink, genres });
+    await recommendationService.createRecommendation({ name, youtubeLink, genres });
 
-    return res.status(statusCode.CREATED).send(recommendation);
+    return res.sendStatus(statusCode.CREATED);
   } catch (error) {
     if (error instanceof RecommendationParamsError) {
       return res.status(statusCode.BAD_REQUEST).send(error.message);

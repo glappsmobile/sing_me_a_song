@@ -1,6 +1,6 @@
 import connection from '../database/connection.js';
 
-const createRecommendation = async ({ name, youtubeLink, genres }) => {
+const createRecommendation = async ({ name, youtubeLink, genresIds }) => {
   const songQuery = await connection.query(
     'INSERT INTO "songs" ("name", "youtube_link") VALUES ($1, $2) RETURNING *;',
     [name, youtubeLink],
@@ -10,7 +10,7 @@ const createRecommendation = async ({ name, youtubeLink, genres }) => {
 
   let genreValues = '';
 
-  genres.forEach((genreId) => {
+  genresIds.forEach((genreId) => {
     genreValues += `
       (${recommendation.id}, ${genreId}),`;
   });
@@ -21,7 +21,7 @@ const createRecommendation = async ({ name, youtubeLink, genres }) => {
 
   await connection.query(recommendationsGenresQueryString);
 
-  return recommendationsGenresQueryString;
+  return true;
 };
 
 const getRecommendationByYoutubeLink = async ({ youtubeLink }) => {

@@ -29,13 +29,17 @@ const createRecommendation = async ({ name, youtubeLink, genres }) => {
     throw new RecommendationConflictError('This YouTube link has already been recommended.');
   }
 
-  const existingGenresWithGivenIds = await genreRepository.getGenresByIds({ ids: genres });
+  const uniqueGenresIds = genres.filter((genre, index) => genres.indexOf(genre) === index);
 
-  if (genres.length !== existingGenresWithGivenIds.length) {
+  const existingGenresWithGivenIds = await genreRepository
+    .getGenresByIds({ genresIds: uniqueGenresIds });
+
+  if (uniqueGenresIds.length !== existingGenresWithGivenIds.length) {
     throw new RecommendationParamsError('At least one of the genres ids does not exist.');
   }
 
-  return recommendationRepository.createRecommendation({ name, youtubeLink, genres });
+  return recommendationRepository
+    .createRecommendation({ name, youtubeLink, genresIds: uniqueGenresIds });
 };
 
 export {
