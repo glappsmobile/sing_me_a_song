@@ -148,35 +148,4 @@ describe('Recommendation Service', () => {
 
     await expect(promise).rejects.toThrowError(RecommendationParamsError);
   });
-
-  /*
-  it('Should throw a GenreParamsError when name is too big', async () => {
-    const body = genreFactory.createTooBigGenreNameBody();
-
-    await expect(async () => {
-      await sut.createGenre(body);
-    }).rejects.toThrowError(GenreParamsError);
-  });
-
-  it('Should throw a GenreConflictError when genre already exists', async () => {
-      mockGenreRepository.getGenreByName().mockImplementationOnce(() => ({ name: 'genre name' }));
-      const body = genreFactory.createGenreBody();
-      const promise = sut.createGenre(body);
-
-      await expect(promise).rejects.toThrowError(GenreConflictError);
-  });
-
-  it("Should return an array with", async () => {
-
-    const mockedGenres = [
-      {id: 1, name: 'rock'}, 
-      {id: 2, name: 'samba'}
-    ];
-    
-    mockGenreRepository.getAllGenres().mockImplementationOnce(() => mockedGenres);
-
-    const result = await sut.getAllGenres();
-
-    expect(result).toEqual(mockedGenres);
-  });*/
 });
