@@ -17,6 +17,7 @@ const mockRecommendationRepository = {
   downvoteRecommendation: () => jest.spyOn(recommendationRepository, 'downvoteRecommendation'),
   deleteRecommendation: () => jest.spyOn(recommendationRepository, 'deleteRecommendation'),
   getRecommendationsByScore: () => jest.spyOn(recommendationRepository, 'getRecommendationsByScore'),
+  getTopRecommendations: () => jest.spyOn(recommendationRepository, 'getTopRecommendations'),
 }
 
 const mockGenreRepository = {
@@ -294,3 +295,27 @@ describe('Recommendation Service: getRandomRecommendation', () => {
   });
 });
 
+describe('Recommendation Service: getTopRecommendations', () => {
+
+  it('Should return an empty array when amount is less than 0', async () => {
+    const result = await sut.getTopRecommendations({ amount: -1 });
+
+    expect(result).toEqual([]);
+  });
+
+  it('Should return an empty array when amount is 0', async () => {
+    const result = await sut.getTopRecommendations({ amount: 0 });
+
+    expect(result).toEqual([]);
+  });
+
+  it('Should return a recommendation when amount is greater than 0', async () => {
+    const recommendation = { id: 9 };
+    
+    mockRecommendationRepository.getTopRecommendations().mockImplementationOnce(() => recommendation);
+
+    const result = await sut.getTopRecommendations({ amount: 1 });
+
+    expect(result).toEqual(recommendation);
+  });
+});
