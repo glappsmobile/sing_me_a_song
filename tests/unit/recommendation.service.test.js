@@ -5,18 +5,22 @@ import * as stringFactory from '../factories/string.factory.js';
 import * as recommendationFactory from '../factories/recommendation.factory.js';
 import RecommendationParamsError from '../../src/errors/RecommendationParamsError.js'
 import RecommendationConflictError from '../../src/errors/RecommendationConflictError.js'
+import RecommendationNotFoundError from '../../src/errors/RecommendationNotFoundError.js'
 
 const sut = recommendationService;
+
 const mockRecommendationRepository = {
   getRecommendationByYoutubeLink: () => jest.spyOn(recommendationRepository, 'getRecommendationByYoutubeLink'),
   createRecommendation: () => jest.spyOn(recommendationRepository, 'createRecommendation'),
+  getRecommendationById: () => jest.spyOn(recommendationRepository, 'getRecommendationById'),
+  upvoteRecommendation: () => jest.spyOn(recommendationRepository, 'upvoteRecommendation'),
 }
 
 const mockGenreRepository = {
   getGenresByIds: () => jest.spyOn(genreRepository, 'getGenresByIds'),
 }
 
-describe('Recommendation Service', () => {
+describe('Recommendation Service: createRecommendation', () => {
 
   it('Should throw a RecommendationParamsError when name length is over 255', async () => {
     const name = stringFactory.createStringWithLength(256);
@@ -149,3 +153,24 @@ describe('Recommendation Service', () => {
     await expect(promise).rejects.toThrowError(RecommendationParamsError);
   });
 });
+
+describe('Recommendation Service: upvoteRecommendation', () => {
+
+  it('Should throw a RecommendationNotFoundError when a non-existent id is given', async () => {
+    mockRecommendationRepository.getRecommendationById().mockImplementationOnce(() =>  false);
+
+    const promise = sut.upvoteRecommendation(1);
+
+    await expect(promise).rejects.toThrowError(RecommendationNotFoundError);
+  });
+
+  it('Should return an array with the score when the id is valid', async () => {
+    mockRecommendationRepository.getRecommendationById().mockImplementationOnce(() =>  true);
+    mockRecommendationRepository.upvoteRecommendation().mockImplementationOnce(() =>  ({ score: 1 }));
+
+    const result = await sut.upvoteRecommendation(1);
+
+    expect(result).toEqual({ score: 1 });
+  });
+});
+
