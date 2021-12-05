@@ -77,7 +77,7 @@ const getRandomRecommendation = async () => {
 
   if (recommendations.length === 0) {
     recommendations = await recommendationRepository
-      .getRecommendationsByScore();
+      .getRecommendationsByScore({ greaterOrEqual: -5 });
   }
 
   const randomRecommendation = recommendations[Math.floor(Math.random() * recommendations.length)];
