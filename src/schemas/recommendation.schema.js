@@ -6,4 +6,11 @@ const createRecommendation = joi.object({
   genres: joi.array().items(joi.number()).required(),
 });
 
-export { createRecommendation };
+const voteRecommendation = joi.object({
+  id: joi.number().required(),
+});
+
+export {
+  createRecommendation,
+  voteRecommendation,
+};

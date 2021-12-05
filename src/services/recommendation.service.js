@@ -2,6 +2,7 @@ import * as recommendationRepository from '../repositories/recommendation.reposi
 import * as genreRepository from '../repositories/genre.repository.js';
 import RecommendationParamsError from '../errors/RecommendationParamsError.js';
 import RecommendationConflictError from '../errors/RecommendationConflictError.js';
+import RecommendationNotFoundError from '../errors/RecommendationNotFoundError.js';
 
 const createRecommendation = async ({ name, youtubeLink, genres }) => {
   if (name.length > 255) {
@@ -42,6 +43,18 @@ const createRecommendation = async ({ name, youtubeLink, genres }) => {
     .createRecommendation({ name, youtubeLink, genresIds: uniqueGenresIds });
 };
 
+const upvoteRecommendation = async ({ id }) => {
+  const existingRecommendationWithGivenId = await recommendationRepository
+    .getRecommendationById({ id });
+
+  if (!existingRecommendationWithGivenId) {
+    throw new RecommendationNotFoundError('There is no such recommendation with given id.');
+  }
+
+  return recommendationRepository.upvoteRecommendation({ id });
+};
+
 export {
   createRecommendation,
+  upvoteRecommendation,
 };

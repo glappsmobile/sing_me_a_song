@@ -2,6 +2,7 @@ import * as recommendationService from '../services/recommendation.service.js';
 import * as recommendationSchema from '../schemas/recommendation.schema.js';
 import RecommendationParamsError from '../errors/RecommendationParamsError.js';
 import RecommendationConflictError from '../errors/RecommendationConflictError.js';
+import RecommendationNotFoundError from '../errors/RecommendationNotFoundError.js';
 import { statusCode } from '../enums/httpStatus.js';
 
 const createRecommendation = async (req, res, next) => {
@@ -28,6 +29,25 @@ const createRecommendation = async (req, res, next) => {
   }
 };
 
+const upvoteRecommendation = async (req, res, next) => {
+  try {
+    if (recommendationSchema.voteRecommendation.validate(req.params).error) {
+      return res.sendStatus(statusCode.BAD_REQUEST);
+    }
+    const { id } = req.params;
+    const recommendation = await recommendationService.upvoteRecommendation({ id });
+
+    res.status(statusCode.OK).send(recommendation);
+  } catch (error) {
+    if (error instanceof RecommendationNotFoundError) {
+      return res.status(statusCode.NOT_FOUND).send(error.message);
+    }
+
+    next(error);
+  }
+};
+
 export {
   createRecommendation,
+  upvoteRecommendation,
 };

@@ -33,7 +33,27 @@ const getRecommendationByYoutubeLink = async ({ youtubeLink }) => {
   return recommendationQuery.rows[0];
 };
 
+const getRecommendationById = async ({ id }) => {
+  const recommendationQuery = await connection.query(
+    'SELECT * FROM songs WHERE id = $1 LIMIT 1',
+    [id],
+  );
+
+  return recommendationQuery.rows[0];
+};
+
+const upvoteRecommendation = async ({ id }) => {
+  const recommendationQuery = await connection.query(
+    'UPDATE songs SET score = score + 1 WHERE id = $1 RETURNING score;',
+    [id],
+  );
+
+  return recommendationQuery.rows[0];
+};
+
 export {
   createRecommendation,
   getRecommendationByYoutubeLink,
+  upvoteRecommendation,
+  getRecommendationById,
 };

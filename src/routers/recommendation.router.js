@@ -5,4 +5,6 @@ const router = new Router();
 
 router.post('', recommendationController.createRecommendation);
 
+router.post('/:id/upvote', recommendationController.upvoteRecommendation);
+
 export default router;
