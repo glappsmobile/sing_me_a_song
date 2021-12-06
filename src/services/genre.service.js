@@ -4,17 +4,23 @@ import GenreParamsError from '../errors/GenreParamsError.js';
 import GenreNotFoundError from '../errors/GenreNotFoundError.js';
 
 const createGenre = async ({ name }) => {
-  if (name.length > 255) {
-    throw new GenreParamsError('Name is too big (over 255 chars).');
+  const trimmedName = name.trim();
+
+  if (trimmedName.length > 255) {
+    throw new GenreParamsError('Name length must me less than 255 characters.');
   }
 
-  const genre = await genreRepository.getGenreByName({ name });
+  if (trimmedName.length === 0) {
+    throw new GenreParamsError('Name length must be greater than 0 characters.');
+  }
+
+  const genre = await genreRepository.getGenreByName({ name: trimmedName });
 
   if (genre) {
-    throw new GenreConflictError(`The genre "${name}" already exists.`);
+    throw new GenreConflictError(`The genre "${trimmedName}" already exists.`);
   }
 
-  return genreRepository.createGenre({ name });
+  return genreRepository.createGenre({ name: trimmedName });
 };
 
 const getAllGenres = async () => genreRepository.getAllGenres();
