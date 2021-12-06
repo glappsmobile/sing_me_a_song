@@ -63,25 +63,25 @@ const voteRecommendation = async ({ id, isUpvote }) => {
   return recommendationRepository.downvoteRecommendation({ id });
 };
 
-const getRandomRecommendation = async () => {
+const getRandomRecommendation = async ({ genreId = null } = {}) => {
   const randomNumber = Math.floor(Math.random() * 101);
 
   let recommendations;
   if (randomNumber <= 70) {
     recommendations = await recommendationRepository
-      .getRecommendationsByScore({ greaterOrEqual: 11 });
+      .getRecommendations({ greaterOrEqual: 11, genreId });
   } else {
     recommendations = await recommendationRepository
-      .getRecommendationsByScore({ greaterOrEqual: -5, lessOrEqual: 10 });
+      .getRecommendations({ greaterOrEqual: -5, lessOrEqual: 10, genreId });
   }
 
   if (recommendations.length === 0) {
     recommendations = await recommendationRepository
-      .getRecommendationsByScore({ greaterOrEqual: -5 });
+      .getRecommendations({ greaterOrEqual: -5, genreId });
   }
 
   if (recommendations.length === 0) {
-    throw new RecommendationNotFoundError('There are no recommendations registered.');
+    throw new RecommendationNotFoundError('Could not find any recommendations.');
   }
 
   const randomRecommendation = recommendations[Math.floor(Math.random() * recommendations.length)];

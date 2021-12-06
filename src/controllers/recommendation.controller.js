@@ -1,5 +1,6 @@
 import * as recommendationService from '../services/recommendation.service.js';
 import * as recommendationSchema from '../schemas/recommendation.schema.js';
+import * as genreSchema from '../schemas/genre.schema.js';
 import RecommendationParamsError from '../errors/RecommendationParamsError.js';
 import RecommendationConflictError from '../errors/RecommendationConflictError.js';
 import RecommendationNotFoundError from '../errors/RecommendationNotFoundError.js';
@@ -62,6 +63,27 @@ const getRandomRecommendation = async (req, res, next) => {
   }
 };
 
+const getRandomRecommendationWithGenre = async (req, res, next) => {
+  if (genreSchema.getGenreById.validate(req.params).error) {
+    return res.sendStatus(statusCode.BAD_REQUEST);
+  }
+
+  try {
+    const { id } = req.params;
+
+    const recommendation = await recommendationService
+      .getRandomRecommendation({ genreId: id });
+
+    res.send(recommendation);
+  } catch (error) {
+    if (error instanceof RecommendationNotFoundError) {
+      return res.status(statusCode.NOT_FOUND).send(error.message);
+    }
+
+    next(error);
+  }
+};
+
 const getTopRecommendations = async (req, res, next) => {
   if (recommendationSchema.getTopRecommendations.validate(req.params).error) {
     return res.sendStatus(statusCode.BAD_REQUEST);
@@ -83,4 +105,5 @@ export {
   voteRecommendation,
   getRandomRecommendation,
   getTopRecommendations,
+  getRandomRecommendationWithGenre,
 };

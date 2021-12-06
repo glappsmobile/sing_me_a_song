@@ -65,7 +65,11 @@ const deleteRecommendation = async ({ id }) => {
   await connection.query('DELETE FROM songs WHERE id = $1;', [id]);
 };
 
-const getRecommendationsByScore = async ({ greaterOrEqual = null, lessOrEqual = null } = {}) => {
+const getRecommendations = async ({
+  greaterOrEqual = null,
+  lessOrEqual = null,
+  genreId = null,
+} = {}) => {
   let queryString = `
     SELECT 
       songs.id, songs.name, songs.score, songs.youtube_link AS "youtubeLink",
@@ -79,7 +83,7 @@ const getRecommendationsByScore = async ({ greaterOrEqual = null, lessOrEqual = 
 
   const preparedValues = [];
 
-  if (greaterOrEqual !== null || lessOrEqual !== null) {
+  if (greaterOrEqual !== null || lessOrEqual !== null || genreId !== null) {
     queryString += ' WHERE';
 
     if (greaterOrEqual !== null) {
@@ -94,6 +98,15 @@ const getRecommendationsByScore = async ({ greaterOrEqual = null, lessOrEqual = 
 
       preparedValues.push(lessOrEqual);
       queryString += ` songs.score <= $${preparedValues.length}`;
+    }
+
+    if (genreId !== null) {
+      if (preparedValues.length > 0) {
+        queryString += ' AND';
+      }
+
+      preparedValues.push(genreId);
+      queryString += ` genres.id = $${preparedValues.length}`;
     }
   }
 
@@ -137,6 +150,6 @@ export {
   getRecommendationById,
   downvoteRecommendation,
   deleteRecommendation,
-  getRecommendationsByScore,
+  getRecommendations,
   getTopRecommendations,
 };
