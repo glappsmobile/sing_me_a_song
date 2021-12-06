@@ -79,7 +79,6 @@ describe('Genre Service: getAllGenres', () => {
   });
 });
 
-
 describe('Genre Service: getGenreById', () => {
   it('Should throw a GenreNotFoundError when there are no genres with given id', async () => {
     mockGenreRepository.getGenreById().mockImplementationOnce(() => false);
