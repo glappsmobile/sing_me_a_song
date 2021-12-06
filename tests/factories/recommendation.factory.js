@@ -8,7 +8,7 @@ const createRecommendationBody = ({ name, youtubeLink, genres } = {}) => {
   return {
     name: fakeName,
     youtubeLink: fakeYoutubeLink,
-    genres: fakeGenres,
+    genresIds: fakeGenres,
   };
 };
 

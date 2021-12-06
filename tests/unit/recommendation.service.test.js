@@ -41,7 +41,7 @@ describe('Recommendation Service: createRecommendation', () => {
 
     mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
     mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
-    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genres);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
 
     const result = await sut.createRecommendation(body);
 
@@ -54,7 +54,7 @@ describe('Recommendation Service: createRecommendation', () => {
 
     mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
     mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
-    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genres);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
 
     const result = await sut.createRecommendation(body);
 
@@ -74,7 +74,7 @@ describe('Recommendation Service: createRecommendation', () => {
 
     mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
     mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
-    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genres);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
 
     const result = await sut.createRecommendation(body);
 
@@ -114,7 +114,7 @@ describe('Recommendation Service: createRecommendation', () => {
 
     mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
     mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
-    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genres);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
 
     const result = await sut.createRecommendation(body);
 
@@ -128,7 +128,7 @@ describe('Recommendation Service: createRecommendation', () => {
 
     mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
     mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
-    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genres);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
 
     const result = await sut.createRecommendation(body);
 

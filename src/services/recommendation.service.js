@@ -4,12 +4,12 @@ import RecommendationParamsError from '../errors/RecommendationParamsError.js';
 import RecommendationConflictError from '../errors/RecommendationConflictError.js';
 import RecommendationNotFoundError from '../errors/RecommendationNotFoundError.js';
 
-const createRecommendation = async ({ name, youtubeLink, genres }) => {
+const createRecommendation = async ({ name, youtubeLink, genresIds }) => {
   if (name.length > 255) {
     throw new RecommendationParamsError('Name is too big (over 255 chars).');
   }
 
-  if (genres.length === 0) {
+  if (genresIds.length === 0) {
     throw new RecommendationParamsError('The recommendation must contain at least one genre.');
   }
 
@@ -30,7 +30,7 @@ const createRecommendation = async ({ name, youtubeLink, genres }) => {
     throw new RecommendationConflictError('This YouTube link has already been recommended.');
   }
 
-  const uniqueGenresIds = genres.filter((genre, index) => genres.indexOf(genre) === index);
+  const uniqueGenresIds = genresIds.filter((genre, index) => genresIds.indexOf(genre) === index);
 
   const existingGenresWithGivenIds = await genreRepository
     .getGenresByIds({ genresIds: uniqueGenresIds });
