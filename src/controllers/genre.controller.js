@@ -6,11 +6,11 @@ import GenreNotFoundError from '../errors/GenreNotFoundError.js';
 import { statusCode } from '../enums/httpStatus.js';
 
 const createGenre = async (req, res, next) => {
-  try {
-    if (genreSchema.createGenre.validate(req.body).error) {
-      return res.sendStatus(statusCode.BAD_REQUEST);
-    }
+  if (genreSchema.createGenre.validate(req.body).error) {
+    return res.sendStatus(statusCode.BAD_REQUEST);
+  }
 
+  try {
     const { name } = req.body;
     const genre = await genreService.createGenre({ name });
 
@@ -39,11 +39,11 @@ const getAllGenres = async (req, res, next) => {
 };
 
 const getGenreById = async (req, res, next) => {
-  try {
-    if (genreSchema.getGenreById.validate(req.params).error) {
-      return res.sendStatus(statusCode.BAD_REQUEST);
-    }
+  if (genreSchema.getGenreById.validate(req.params).error) {
+    return res.sendStatus(statusCode.BAD_REQUEST);
+  }
 
+  try {
     const { id } = req.params;
 
     const genre = await genreService.getGenreById({ id });

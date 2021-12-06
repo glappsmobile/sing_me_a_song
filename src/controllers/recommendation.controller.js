@@ -7,13 +7,13 @@ import RecommendationNotFoundError from '../errors/RecommendationNotFoundError.j
 import { statusCode } from '../enums/httpStatus.js';
 
 const createRecommendation = async (req, res, next) => {
+  if (recommendationSchema.createRecommendation.validate(req.body).error) {
+    return res.sendStatus(statusCode.BAD_REQUEST);
+  }
+
+  const { name, youtubeLink, genres } = req.body;
+
   try {
-    if (recommendationSchema.createRecommendation.validate(req.body).error) {
-      return res.sendStatus(statusCode.BAD_REQUEST);
-    }
-
-    const { name, youtubeLink, genres } = req.body;
-
     await recommendationService.createRecommendation({ name, youtubeLink, genres });
 
     return res.sendStatus(statusCode.CREATED);
@@ -31,13 +31,15 @@ const createRecommendation = async (req, res, next) => {
 };
 
 const voteRecommendation = async (req, res, next) => {
-  try {
-    if (recommendationSchema.voteRecommendation.validate(req.params).error) {
-      return res.sendStatus(statusCode.BAD_REQUEST);
-    }
+  if (recommendationSchema.voteRecommendation.validate(req.params).error) {
+    return res.sendStatus(statusCode.BAD_REQUEST);
+  }
 
-    const { id, action } = req.params;
-    const isUpvote = action === 'upvote';
+  const { id, action } = req.params;
+
+  const isUpvote = action === 'upvote';
+
+  try {
     const recommendationNewScore = await recommendationService.voteRecommendation({ id, isUpvote });
 
     res.status(statusCode.OK).send(recommendationNewScore);
@@ -68,9 +70,9 @@ const getRandomRecommendationWithGenre = async (req, res, next) => {
     return res.sendStatus(statusCode.BAD_REQUEST);
   }
 
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
 
+  try {
     const recommendation = await recommendationService
       .getRandomRecommendation({ genreId: id });
 
@@ -89,9 +91,9 @@ const getTopRecommendations = async (req, res, next) => {
     return res.sendStatus(statusCode.BAD_REQUEST);
   }
 
-  try {
-    const { amount } = req.params;
+  const { amount } = req.params;
 
+  try {
     const recommendations = await recommendationService.getTopRecommendations({ amount });
 
     res.send(recommendations);
