@@ -69,7 +69,7 @@ const getRecommendationsByScore = async ({ greaterOrEqual = null, lessOrEqual = 
   let queryString = `
     SELECT 
       songs.id, songs.name, songs.score, songs.youtube_link AS "youtubeLink",
-      json_agg(CAST(ROW(genres.id, genres.name) AS genres )) AS genres
+      json_agg(genres.*) AS genres
     FROM songs
       JOIN songs_genres
         ON songs_genres.song_id = songs.id
