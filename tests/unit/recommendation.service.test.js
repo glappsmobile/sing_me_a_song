@@ -208,8 +208,8 @@ describe('Recommendation Service: getRandomRecommendation', () => {
 
   it('Should return a recommendation with score greater than or equal 11 when Math.random is equal 0.7', async () => {
     global.Math.random = () => 0.7;
-    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ greaterOrEqual }) =>  {
-      if (greaterOrEqual === 11) {
+    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ lessOrEqual, greaterOrEqual, genreId }) =>  {
+      if (greaterOrEqual === 11, lessOrEqual === undefined , genreId === undefined) {
         return [{ score: 11 }];
       }
 
@@ -223,8 +223,8 @@ describe('Recommendation Service: getRandomRecommendation', () => {
 
   it('Should return a recommendation with score greater than or equal 11 when Math.random is less than 0.7', async () => {
     global.Math.random = () => 0.69;
-    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ greaterOrEqual }) =>  {
-      if (greaterOrEqual === 11) {
+    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ lessOrEqual, greaterOrEqual, genreId }) =>  {
+      if (greaterOrEqual === 11, lessOrEqual === undefined, genreId === undefined) {
         return [{ score: 11 }];
       }
 
@@ -238,8 +238,8 @@ describe('Recommendation Service: getRandomRecommendation', () => {
 
   it('Should return a recommendation with score greater than or equal -5 and less than or equal 10 when Math.random is greater than 0.7', async () => {
     global.Math.random = () => 0.71;
-    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ greaterOrEqual, lessOrEqual }) =>  {
-      if (greaterOrEqual === -5 && lessOrEqual === 10) {
+    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ lessOrEqual, greaterOrEqual, genreId }) =>  {
+      if (greaterOrEqual === -5 && lessOrEqual === 10, genreId === undefined) {
         return [{ score: -2 }];
       }
 
@@ -255,8 +255,8 @@ describe('Recommendation Service: getRandomRecommendation', () => {
   it('Should return a recommendation with score greater than -5 when Math.random is equal 0.7 but there are no recommendations with score less than or equal 10', async () => {
     global.Math.random = () => 0.70;
     mockRecommendationRepository.getRecommendations().mockImplementationOnce(() => []);
-    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ greaterOrEqual, lessOrEqual }) =>  {
-      if (greaterOrEqual === -5 && lessOrEqual === undefined) {
+    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ lessOrEqual, greaterOrEqual, genreId }) =>  {
+      if (greaterOrEqual === -5 && lessOrEqual === undefined, genreId === undefined) {
       return [{ score: 11 }];
     }
 
@@ -272,8 +272,8 @@ describe('Recommendation Service: getRandomRecommendation', () => {
   it('Should return a recommendation with score greater than -5 when Math.random is less than 0.7 but there are no recommendations with score less than or equal 10', async () => {
     global.Math.random = () => 0.69;
     mockRecommendationRepository.getRecommendations().mockImplementationOnce(() => []);
-    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ greaterOrEqual, lessOrEqual }) =>  {
-      if (greaterOrEqual === -5 && lessOrEqual === undefined) {
+    mockRecommendationRepository.getRecommendations().mockImplementationOnce(({ lessOrEqual, greaterOrEqual, genreId }) =>  {
+      if (greaterOrEqual === -5 && lessOrEqual === undefined, genreId === undefined) {
       return [{ score: 11 }];
     }
 

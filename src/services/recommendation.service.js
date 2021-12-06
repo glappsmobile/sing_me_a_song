@@ -63,7 +63,7 @@ const voteRecommendation = async ({ id, isUpvote }) => {
   return recommendationRepository.downvoteRecommendation({ id });
 };
 
-const getRandomRecommendation = async ({ genreId = null } = {}) => {
+const getRandomRecommendation = async ({ genreId } = {}) => {
   const randomNumber = Math.floor(Math.random() * 101);
 
   let recommendations;
