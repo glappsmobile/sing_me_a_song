@@ -11,10 +11,10 @@ const createRecommendation = async (req, res, next) => {
     return res.sendStatus(statusCode.BAD_REQUEST);
   }
 
-  const { name, youtubeLink, genres } = req.body;
+  const { name, youtubeLink, genresIds } = req.body;
 
   try {
-    await recommendationService.createRecommendation({ name, youtubeLink, genres });
+    await recommendationService.createRecommendation({ name, youtubeLink, genresIds });
 
     return res.sendStatus(statusCode.CREATED);
   } catch (error) {
