@@ -16,7 +16,7 @@ const mockGenreRepository = {
 }
 
 describe('Genre Service: createGenre', () => {
-  it('Should throw a GenreParamsError when name length is over 255', async () => {
+  it('Should throw a GenreParamsError when name length is greater than 255', async () => {
     const name = stringFactory.createStringWithLength(256);
 
     const promise = sut.createGenre({ name });
@@ -50,6 +50,82 @@ describe('Genre Service: createGenre', () => {
     expect(result).toBe(genre);
   });
 
+  it('Should throw a GenreParamsError when name length is equal 0', async () => {
+    const name = "";
+
+    const promise = sut.createGenre({ name });
+
+    await expect(promise).rejects.toThrowError(GenreParamsError);
+  });
+
+  it('Should return an object with the genre name and id when name length is greater than 0 and genre does not exist', async () => {
+    const name = "a";
+
+    const genre = { id: 1, name }
+
+    mockGenreRepository.createGenre().mockImplementationOnce(() => genre);
+    mockGenreRepository.getGenreByName().mockImplementationOnce(() => false);
+
+    const result = await sut.createGenre({ name });
+
+    expect(result).toBe(genre);
+  });
+
+  it('Should throw a GenreParamsError when trimmed name length is greater than 255', async () => {
+    const name = "     " + stringFactory.createStringWithLength(256) + "     ";
+
+    const promise = sut.createGenre({ name });
+
+    await expect(promise).rejects.toThrowError(GenreParamsError);
+  });
+
+  it('Should return an object with the genre name and id when name length is equal to 255 and genre does not exist', async () => {
+    const name = "     " + stringFactory.createStringWithLength(255) + "     ";
+
+    const genre = { id: 1, name }
+
+    mockGenreRepository.createGenre().mockImplementationOnce(() => genre);
+    mockGenreRepository.getGenreByName().mockImplementationOnce(() => false);
+
+    const result = await sut.createGenre({ name });
+
+    expect(result).toBe(genre);
+  });
+
+  it('Should return an object with the genre name and id when name length is less than 255 and genre does not exist', async () => {
+    const name = "     " + stringFactory.createStringWithLength(254) + "     ";
+
+    const genre = { id: 1, name }
+
+    mockGenreRepository.createGenre().mockImplementationOnce(() => genre);
+    mockGenreRepository.getGenreByName().mockImplementationOnce(() => false);
+
+    const result = await sut.createGenre({ name });
+
+    expect(result).toBe(genre);
+  });
+
+  it('Should throw a GenreParamsError when name length is equal 0', async () => {
+    const name = "     ";
+
+    const promise = sut.createGenre({ name });
+
+    await expect(promise).rejects.toThrowError(GenreParamsError);
+  });
+
+  it('Should return an object with the genre name and id when name length is greater than 0 and genre does not exist', async () => {
+    const name = "     a     ";
+
+    const genre = { id: 1, name }
+
+    mockGenreRepository.createGenre().mockImplementationOnce(() => genre);
+    mockGenreRepository.getGenreByName().mockImplementationOnce(() => false);
+
+    const result = await sut.createGenre({ name });
+
+    expect(result).toBe(genre);
+  });
+
   it('Should throw a GenreConflictError when genre already exists', async () => {
       mockGenreRepository.getGenreByName().mockImplementationOnce(() => ({ name: 'genre name' }));
       
@@ -59,8 +135,6 @@ describe('Genre Service: createGenre', () => {
 
       await expect(promise).rejects.toThrowError(GenreConflictError);
   });
-
-
 });
 
 describe('Genre Service: getAllGenres', () => {
