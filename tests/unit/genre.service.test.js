@@ -6,6 +6,7 @@ import GenreConflictError from '../../src/errors/GenreConflictError.js'
 import GenreNotFoundError from '../../src/errors/GenreNotFoundError.js'
 
 const sut = genreService;
+
 const mockGenreRepository = {
   getGenreByName: () => jest.spyOn(genreRepository, 'getGenreByName'),
   createGenre: () =>  jest.spyOn(genreRepository, 'createGenre'),
@@ -13,24 +14,29 @@ const mockGenreRepository = {
   getGenreById: () =>  jest.spyOn(genreRepository, 'getGenreById'),
 }
 
-describe('Genre Service', () => {
+describe('Genre Service: createGenre', () => {
   it('Should throw a GenreParamsError when name is too big', async () => {
     const body = genreFactory.createTooBigGenreNameBody();
 
-    await expect(async () => {
-      await sut.createGenre(body);
-    }).rejects.toThrowError(GenreParamsError);
+    const promise = sut.createGenre(body);
+
+    await expect(promise).rejects.toThrowError(GenreParamsError);
   });
 
   it('Should throw a GenreConflictError when genre already exists', async () => {
       mockGenreRepository.getGenreByName().mockImplementationOnce(() => ({ name: 'genre name' }));
       
       const body = genreFactory.createGenreBody();
+
       const promise = sut.createGenre(body);
 
       await expect(promise).rejects.toThrowError(GenreConflictError);
   });
 
+
+});
+
+describe('Genre Service: createGenre', () => {
   it("Should return an array with", async () => {
 
     const mockedGenres = [
@@ -45,6 +51,7 @@ describe('Genre Service', () => {
     expect(result).toEqual(mockedGenres);
   });
 });
+
 
 describe('Genre Service: getGenreById', () => {
   it('Should throw a GenreNotFoundError when there are no genres with given id', async () => {
