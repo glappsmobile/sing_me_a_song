@@ -25,8 +25,7 @@ const mockGenreRepository = {
 }
 
 describe('Recommendation Service: createRecommendation', () => {
-
-  it('Should throw a RecommendationParamsError when name length is over 255', async () => {
+  it('Should throw a RecommendationParamsError when name length is greater than 255', async () => {
     const name = stringFactory.createStringWithLength(256);
     const body = recommendationFactory.createRecommendationBody({name});
 
@@ -61,16 +60,95 @@ describe('Recommendation Service: createRecommendation', () => {
     expect(result).toEqual(true);
   });
 
-  it('Should throw a RecommendationParamsError when genres length is 0', async () => {
-    const body = recommendationFactory.createRecommendationBody({ genres: [] });
+  it('Should throw a RecommendationParamsError when trimmed name length is greater than 255', async () => {
+    const name = "     " + stringFactory.createStringWithLength(256) + "     ";
+    const body = recommendationFactory.createRecommendationBody({name});
 
     const promise = sut.createRecommendation(body);
 
     await expect(promise).rejects.toThrowError(RecommendationParamsError);
   });
 
-  it('Should return true when genres length is over 0', async () => {
-    const body = recommendationFactory.createRecommendationBody({ genres: [1] });
+  it('Should return true when trimmed name length is 255', async () => {
+    const name = "     " + stringFactory.createStringWithLength(255) + "     ";
+    const body = recommendationFactory.createRecommendationBody({name});
+
+    mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
+    mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
+
+    const result = await sut.createRecommendation(body);
+
+    expect(result).toEqual(true);
+  });
+
+  it('Should return true when trimmed name length is less than 255', async () => {
+    const name = "     " + stringFactory.createStringWithLength(254) + "     ";
+    const body = recommendationFactory.createRecommendationBody({name});
+
+    mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
+    mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
+
+    const result = await sut.createRecommendation(body);
+
+    expect(result).toEqual(true);
+  });
+
+  it('Should throw a RecommendationParamsError when name length is equal to 0', async () => {
+    const name = '';
+    const body = recommendationFactory.createRecommendationBody({name});
+
+    const promise = sut.createRecommendation(body);
+
+    await expect(promise).rejects.toThrowError(RecommendationParamsError);
+  });
+
+  it('Should return true when name length is greater than 0 and less than 255', async () => {
+    const name = 'a';
+    const body = recommendationFactory.createRecommendationBody({name});
+
+    mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
+    mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
+
+    const result = await sut.createRecommendation(body);
+
+    expect(result).toEqual(true);
+  });
+
+  it('Should throw a RecommendationParamsError when trimmed name length is equal to 0', async () => {
+    const name = '     ';
+    const body = recommendationFactory.createRecommendationBody({name});
+
+    const promise = sut.createRecommendation(body);
+
+    await expect(promise).rejects.toThrowError(RecommendationParamsError);
+  });
+
+  it('Should return true when trimmed name length is greater than 0 and less than 255', async () => {
+    const name = '     a     ';
+    const body = recommendationFactory.createRecommendationBody({name});
+
+    mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
+    mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
+    mockGenreRepository.getGenresByIds().mockImplementationOnce(() => body.genresIds);
+
+    const result = await sut.createRecommendation(body);
+
+    expect(result).toEqual(true);
+  });
+
+  it('Should throw a RecommendationParamsError when genresIds length is 0', async () => {
+    const body = recommendationFactory.createRecommendationBody({ genresIds: [] });
+
+    const promise = sut.createRecommendation(body);
+
+    await expect(promise).rejects.toThrowError(RecommendationParamsError);
+  });
+
+  it('Should return true when genresIds length is over 0', async () => {
+    const body = recommendationFactory.createRecommendationBody({ genresIds: [1] });
 
     mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
     mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);
@@ -145,8 +223,8 @@ describe('Recommendation Service: createRecommendation', () => {
     await expect(promise).rejects.toThrowError(RecommendationConflictError);
   });
 
-  it('Should throw a RecommendationParamsError when there are less genres in the database than unique genres in the param', async () => {
-    const body = recommendationFactory.createRecommendationBody({ genres: [1, 2, 3] });
+  it('Should throw a RecommendationParamsError when there are less genres in the database than unique genresIds in the param', async () => {
+    const body = recommendationFactory.createRecommendationBody({ genresIds: [1, 2, 3] });
 
     mockRecommendationRepository.getRecommendationByYoutubeLink().mockImplementationOnce(() => false);
     mockRecommendationRepository.createRecommendation().mockImplementationOnce(() => true);

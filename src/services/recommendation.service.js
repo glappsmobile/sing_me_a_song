@@ -5,8 +5,14 @@ import RecommendationConflictError from '../errors/RecommendationConflictError.j
 import RecommendationNotFoundError from '../errors/RecommendationNotFoundError.js';
 
 const createRecommendation = async ({ name, youtubeLink, genresIds }) => {
-  if (name.length > 255) {
-    throw new RecommendationParamsError('Name is too big (over 255 chars).');
+  const trimmedName = name.trim();
+
+  if (trimmedName.length > 255) {
+    throw new RecommendationParamsError('Name length must me less than 255 characters.');
+  }
+
+  if (trimmedName.length === 0) {
+    throw new RecommendationParamsError('Name length must be greater than 0 characters.');
   }
 
   if (genresIds.length === 0) {
@@ -40,7 +46,7 @@ const createRecommendation = async ({ name, youtubeLink, genresIds }) => {
   }
 
   return recommendationRepository
-    .createRecommendation({ name, youtubeLink, genresIds: uniqueGenresIds });
+    .createRecommendation({ name: trimmedName, youtubeLink, genresIds: uniqueGenresIds });
 };
 
 const voteRecommendation = async ({ id, isUpvote }) => {
