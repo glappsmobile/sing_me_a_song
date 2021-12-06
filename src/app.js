@@ -14,7 +14,7 @@ app.get('/status', async (req, res) => {
 });
 
 app.use('/genres', genreRouter);
-app.use('/recommendation', recommendationRouter);
+app.use('/recommendations', recommendationRouter);
 
 app.use(serverError);
 

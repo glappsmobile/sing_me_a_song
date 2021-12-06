@@ -65,11 +65,22 @@ const deleteRecommendation = async ({ id }) => {
   await connection.query('DELETE FROM songs WHERE id = $1;', [id]);
 };
 
-const getRecommendationsByScore = async ({ greaterOrEqual = null, lessOrEqual = null } = {}) => {
+const getRecommendations = async ({
+  greaterOrEqual = null,
+  lessOrEqual = null,
+  genreId = null,
+} = {}) => {
   let queryString = `
     SELECT 
       songs.id, songs.name, songs.score, songs.youtube_link AS "youtubeLink",
-      json_agg(CAST(ROW(genres.id, genres.name) AS genres )) AS genres
+      (
+        SELECT
+          json_agg(genres.*) AS genres
+        FROM songs_genres
+          JOIN genres
+            ON songs_genres.genre_id = genres.id
+        WHERE songs_genres.song_id = songs.id
+      )
     FROM songs
       JOIN songs_genres
         ON songs_genres.song_id = songs.id
@@ -79,7 +90,7 @@ const getRecommendationsByScore = async ({ greaterOrEqual = null, lessOrEqual = 
 
   const preparedValues = [];
 
-  if (greaterOrEqual !== null || lessOrEqual !== null) {
+  if (greaterOrEqual !== null || lessOrEqual !== null || genreId !== null) {
     queryString += ' WHERE';
 
     if (greaterOrEqual !== null) {
@@ -94,6 +105,15 @@ const getRecommendationsByScore = async ({ greaterOrEqual = null, lessOrEqual = 
 
       preparedValues.push(lessOrEqual);
       queryString += ` songs.score <= $${preparedValues.length}`;
+    }
+
+    if (genreId !== null) {
+      if (preparedValues.length > 0) {
+        queryString += ' AND';
+      }
+
+      preparedValues.push(genreId);
+      queryString += ` genres.id = $${preparedValues.length}`;
     }
   }
 
@@ -137,6 +157,6 @@ export {
   getRecommendationById,
   downvoteRecommendation,
   deleteRecommendation,
-  getRecommendationsByScore,
+  getRecommendations,
   getTopRecommendations,
 };
