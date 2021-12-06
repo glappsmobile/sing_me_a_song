@@ -6,8 +6,6 @@ CREATE TABLE "genres" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "songs" (
 	"id" serial NOT NULL,
 	"name" varchar(255) NOT NULL,
@@ -18,8 +16,6 @@ CREATE TABLE "songs" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "songs_genres" (
 	"id" serial NOT NULL,
 	"song_id" integer NOT NULL,
@@ -28,10 +24,6 @@ CREATE TABLE "songs_genres" (
 ) WITH (
   OIDS=FALSE
 );
-
-
-
-
 
 ALTER TABLE "songs_genres" ADD CONSTRAINT "songs_genres_fk0" FOREIGN KEY ("song_id") REFERENCES "songs"("id");
 ALTER TABLE "songs_genres" ADD CONSTRAINT "songs_genres_fk1" FOREIGN KEY ("genre_id") REFERENCES "genres"("id");
