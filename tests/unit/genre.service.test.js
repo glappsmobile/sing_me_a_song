@@ -4,6 +4,7 @@ import * as genreFactory from '../factories/genre.factory.js';
 import GenreParamsError from '../../src/errors/GenreParamsError.js'
 import GenreConflictError from '../../src/errors/GenreConflictError.js'
 import GenreNotFoundError from '../../src/errors/GenreNotFoundError.js'
+import * as stringFactory from '../factories/string.factory.js';
 
 const sut = genreService;
 
@@ -15,12 +16,38 @@ const mockGenreRepository = {
 }
 
 describe('Genre Service: createGenre', () => {
-  it('Should throw a GenreParamsError when name is too big', async () => {
-    const body = genreFactory.createTooBigGenreNameBody();
+  it('Should throw a GenreParamsError when name length is over 255', async () => {
+    const name = stringFactory.createStringWithLength(256);
 
-    const promise = sut.createGenre(body);
+    const promise = sut.createGenre({ name });
 
     await expect(promise).rejects.toThrowError(GenreParamsError);
+  });
+
+  it('Should return an object with the genre name and id when name length is equal to 255 and genre does not exist', async () => {
+    const name = stringFactory.createStringWithLength(255);
+
+    const genre = { id: 1, name }
+
+    mockGenreRepository.createGenre().mockImplementationOnce(() => genre);
+    mockGenreRepository.getGenreByName().mockImplementationOnce(() => false);
+
+    const result = await sut.createGenre({ name });
+
+    expect(result).toBe(genre);
+  });
+
+  it('Should return an object with the genre name and id when name length is less than 255 and genre does not exist', async () => {
+    const name = stringFactory.createStringWithLength(254);
+
+    const genre = { id: 1, name }
+
+    mockGenreRepository.createGenre().mockImplementationOnce(() => genre);
+    mockGenreRepository.getGenreByName().mockImplementationOnce(() => false);
+
+    const result = await sut.createGenre({ name });
+
+    expect(result).toBe(genre);
   });
 
   it('Should throw a GenreConflictError when genre already exists', async () => {
@@ -36,7 +63,7 @@ describe('Genre Service: createGenre', () => {
 
 });
 
-describe('Genre Service: createGenre', () => {
+describe('Genre Service: getAllGenres', () => {
   it("Should return an array with", async () => {
 
     const mockedGenres = [
